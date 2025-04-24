@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'features/book_listing/data/models/book_model.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Hive
+  await Hive.initFlutter();
+
+  // Register adapter
+  Hive.registerAdapter(BookModelAdapter());
+
+  // Open box
+  await Hive.openBox<BookModel>('booksBox');
   runApp(const MyApp());
 }
 

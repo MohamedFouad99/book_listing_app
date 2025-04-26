@@ -1,5 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:book_listing_app/core/helpers/spacing.dart';
+import 'package:book_listing_app/features/book_listing/presentation/ui/widgets/book_image.dart';
+import 'package:book_listing_app/features/book_listing/presentation/ui/widgets/book_summary.dart';
+import 'package:book_listing_app/features/book_listing/presentation/ui/widgets/book_text_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../core/theming/colors.dart';
 import '../../../domain/entities/book_entity.dart';
 
 class BookListItem extends StatefulWidget {
@@ -11,64 +16,48 @@ class BookListItem extends StatefulWidget {
   State<BookListItem> createState() => _BookListItemState();
 }
 
-class _BookListItemState extends State<BookListItem> {
+class _BookListItemState extends State<BookListItem>
+    with TickerProviderStateMixin {
   bool expanded = false;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.book.imageUrl != null)
-              CachedNetworkImage(
-                imageUrl: widget.book.imageUrl!,
-                width: 60,
-                height: 90,
-                fit: BoxFit.cover,
-                placeholder: (_, __) => const CircularProgressIndicator(),
-                errorWidget: (_, __, ___) => const Icon(Icons.broken_image),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: ColorsManager.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: ColorsManager.gray,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BookImage(imageUrl: widget.book.imageUrl),
+              horizontalSpace(12),
+              Expanded(
+                child: BookTextContent(
+                  title: widget.book.title,
+                  authors: widget.book.authors,
+                ),
               ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.book.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    widget.book.authors.join(', '),
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 6),
-                  if (widget.book.summary != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.book.summary!,
-                          maxLines: expanded ? null : 3,
-                          overflow:
-                              expanded
-                                  ? TextOverflow.visible
-                                  : TextOverflow.ellipsis,
-                        ),
-                        TextButton(
-                          onPressed: () => setState(() => expanded = !expanded),
-                          child: Text(expanded ? 'See Less' : 'See More'),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+            ],
+          ),
+          if (widget.book.summary != null && widget.book.summary!.isNotEmpty)
+            BookSummary(
+              summary: widget.book.summary!,
+              expanded: expanded,
+              onToggle: () => setState(() => expanded = !expanded),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+// date: 26 April 2025
+// by: Fouad
+// last modified at: 26 April 2025
+// description: This file contains helper constants for font weights in the application.
 class FontWeightHelper {
   static const FontWeight thin = FontWeight.w100;
   static const FontWeight extraLight = FontWeight.w200;

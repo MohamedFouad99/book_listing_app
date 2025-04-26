@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 
+// date: 26 April 2025
+// by: Fouad
+// last modified at: 26 April 2025
+// description: This file contains the Failure class and its subclasses used for error handling in the application.
 abstract class Failure {
   final String message;
 

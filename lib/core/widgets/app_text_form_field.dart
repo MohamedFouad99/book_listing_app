@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../theming/colors.dart';
 import '../theming/style.dart';
 
+// date: 26 April 2025
+// by: Fouad
+// last modified at: 26 April 2025
+// description: This file contains the AppTextFormField widget which is a custom text form field used in the application.
 class AppTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final InputBorder? focusedBorder;
@@ -46,6 +49,22 @@ class AppTextFormField extends StatelessWidget {
   });
 
   @override
+  /// Build a [TextFormField] widget with some default styling.
+  ///
+  /// The widget is created with a dense layout and a rounded border.
+  /// The border width is 1.3, the border radius is 8.
+  /// The filled color is white.
+  /// The hint text style is [TextStyles.font14DarkGreyRegular].
+  /// The suffix and prefix icons are positioned at the end of the text field.
+  /// The text field is obscure by default.
+  /// The validator function is passed to the [TextFormField.validator] property.
+  /// The [TextFormField.onChanged] property is set to the [onChanged] function.
+  /// The [TextFormField.onFieldSubmitted] property is set to the [onFieldSubmitted] function.
+  /// The [TextFormField.keyboardType] property is set to the [keyboardType] parameter.
+  /// The [TextFormField.readOnly] property is set to the [readOnly] parameter.
+  /// The [TextFormField.maxLines] property is set to the [maxLines] parameter or 1 if it is null.
+  /// The [TextFormField.initialValue] property is set to the [initialValue] parameter.
+  /// The [TextFormField.controller] property is set to the [controller] parameter.
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: readOnly,

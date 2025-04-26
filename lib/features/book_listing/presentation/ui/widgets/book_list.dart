@@ -1,21 +1,35 @@
-import 'package:book_listing_app/core/theming/colors.dart';
-import 'package:book_listing_app/features/book_listing/domain/entities/book_entity.dart';
-import 'package:book_listing_app/features/book_listing/presentation/cubit/book_cubit.dart';
-import 'package:book_listing_app/features/book_listing/presentation/cubit/book_state.dart';
-import 'package:book_listing_app/features/book_listing/presentation/ui/widgets/book_list_item.dart';
-import 'package:book_listing_app/features/book_listing/presentation/ui/widgets/lottie_widget.dart';
+import '../../../../../core/theming/colors.dart';
+import '../../../domain/entities/book_entity.dart';
+import '../../cubit/book_cubit.dart';
+import '../../cubit/book_state.dart';
+import 'book_list_item.dart';
+import 'lottie_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../../core/constants/app_assets.dart';
 
+// date: 26 April 2025
+// by: Fouad
+// last modified at: 26 April 2025
+// description: This file contains the BookList widget which is used to display a list of books.
 class BookList extends StatelessWidget {
   final ScrollController scrollController;
 
   const BookList({super.key, required this.scrollController});
 
   @override
+  /// Builds the UI for displaying a list of books.
+  ///
+  /// Uses a [BlocBuilder] to listen to the [BookCubit] and build the UI based
+  /// on the current [BookState].
+  ///
+  /// - Displays a loading animation while books are being loaded.
+  /// - Shows an error message with an animation if the book loading fails.
+  /// - Displays a list of books once the books are successfully loaded.
+  /// - Shows a pagination loading indicator when more books are being fetched.
+  /// - If no books are found, it displays a message indicating that no books are available.
   Widget build(BuildContext context) {
     return BlocBuilder<BookCubit, BookState>(
       builder: (context, state) {

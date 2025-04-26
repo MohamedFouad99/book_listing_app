@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import '../../domain/entities/book_entity.dart';
 import '../../domain/repositories/book_repository.dart';
 import '../../../../../core/errors/failure.dart';
@@ -17,17 +16,25 @@ class BookRepositoryImpl implements BookRepository {
 
   @override
   Future<Either<Failure, List<BookEntity>>> getBooks({int page = 1}) async {
-    try {
-      final books = await remoteDataSource.fetchBooks(page: page);
-      await localDataSource.cacheBooks(books: books, page: page);
-      return right(books);
-    } on DioException catch (e) {
-      final cached = localDataSource.getCachedBooks(page: page);
-      if (cached != null) return right(cached);
-      return left(ServerFailure.fromDiorError(e));
-    } catch (e) {
-      return left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
+    final result = await remoteDataSource.fetchBooks(page: page);
+
+    return result.fold(
+      (failure) {
+        final cached = localDataSource.getCachedBooks();
+        if (cached != null) {
+          return right(cached);
+        } else {
+          return left(failure);
+        }
+      },
+      (books) async {
+        await localDataSource.cacheBooks(
+          books: books,
+          clearBeforeSave: page == 1,
+        );
+        return right(books);
+      },
+    );
   }
 
   @override
@@ -35,16 +42,24 @@ class BookRepositoryImpl implements BookRepository {
     String query, {
     int page = 1,
   }) async {
-    try {
-      final books = await remoteDataSource.fetchBooks(query: query, page: page);
-      await localDataSource.cacheBooks(books: books, page: page, query: query);
-      return right(books);
-    } on DioException catch (e) {
-      final cached = localDataSource.getCachedBooks(page: page, query: query);
-      if (cached != null) return right(cached);
-      return left(ServerFailure.fromDiorError(e));
-    } catch (e) {
-      return left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
+    final result = await remoteDataSource.fetchBooks(query: query, page: page);
+
+    return result.fold(
+      (failure) {
+        final cached = localDataSource.searchCachedBooks(query);
+        if (cached.isNotEmpty) {
+          return right(cached);
+        } else {
+          return left(failure);
+        }
+      },
+      (books) async {
+        await localDataSource.cacheBooks(
+          books: books,
+          clearBeforeSave: page == 1,
+        );
+        return right(books);
+      },
+    );
   }
 }

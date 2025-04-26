@@ -2,33 +2,37 @@ import 'package:hive/hive.dart';
 import '../models/book_model.dart';
 
 class BookLocalDataSource {
-  final Box box;
+  final Box<BookModel> box;
 
   BookLocalDataSource(this.box);
 
+  /// Cache all books (override if refreshing, append if loading more)
   Future<void> cacheBooks({
     required List<BookModel> books,
-    required int page,
-    String? query,
+    bool clearBeforeSave = false,
   }) async {
-    final key = _generateKey(page: page, query: query);
-    await box.put(key, books);
-  }
-
-  List<BookModel>? getCachedBooks({required int page, String? query}) {
-    final key = _generateKey(page: page, query: query);
-    final result = box.get(key);
-
-    if (result is List<dynamic>) {
-      return result.cast<BookModel>();
+    if (clearBeforeSave) {
+      await box.clear();
     }
-
-    return null;
+    await box.addAll(books);
   }
 
-  String _generateKey({required int page, String? query}) {
-    return query != null && query.isNotEmpty
-        ? 'search_${query}_page_$page'
-        : 'page_$page';
+  /// Retrieve all cached books (used for fallback on error)
+  List<BookModel>? getCachedBooks() {
+    final books = box.values.toList();
+    return books.isEmpty ? null : books;
+  }
+
+  List<BookModel> searchCachedBooks(String query) {
+    final normalizedQuery = query.trim().toLowerCase();
+    final allBooks = box.values.toList();
+
+    return allBooks.where((book) {
+      final titleMatch = book.title.toLowerCase().contains(normalizedQuery);
+      final authorMatch = book.authors.any(
+        (a) => a.toLowerCase().contains(normalizedQuery),
+      );
+      return titleMatch || authorMatch;
+    }).toList();
   }
 }

@@ -43,7 +43,9 @@ class MyApp extends StatelessWidget {
     );
     final getBooksUseCase = GetBooksUseCase(repository);
     final searchBooksUseCase = SearchBooksUseCase(repository);
-
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -55,7 +57,12 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: ScreenUtilInit(
-        designSize: const Size(375, 812),
+        designSize:
+            isTablet
+                ? (isLandscape ? const Size(1024, 800) : const Size(768, 1024))
+                : isLandscape
+                ? const Size(812, 900)
+                : const Size(375, 812),
         minTextAdapt: true,
         // splitScreenMode: true,
         child: MaterialApp(

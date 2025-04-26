@@ -8,6 +8,7 @@ import 'package:book_listing_app/features/book_listing/presentation/ui/pages/boo
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'features/book_listing/data/models/book_model.dart';
 
@@ -53,11 +54,16 @@ class MyApp extends StatelessWidget {
               ),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Book Listing App',
-        theme: ThemeData(primarySwatch: Colors.indigo),
-        home: const BookListPage(),
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Book Listing App',
+          theme: ThemeData(primarySwatch: Colors.indigo),
+          home: const BookListPage(),
+        ),
       ),
     );
   }

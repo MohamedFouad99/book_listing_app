@@ -1,3 +1,4 @@
+import 'package:book_listing_app/core/constants/api_constants.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../../../../core/errors/failure.dart';
@@ -14,10 +15,10 @@ class BookRemoteDataSource {
   }) async {
     try {
       final response = await dio.get(
-        'https://gutendex.com/books',
+        ApiConstants.apiBaseUrl,
         queryParameters: {
-          'page': page,
-          if (query != null && query.isNotEmpty) 'search': query,
+          ApiConstants.page: page,
+          if (query != null && query.isNotEmpty) ApiConstants.query: query,
         },
       );
 
